@@ -194,7 +194,7 @@ class CachedTnPathOptimizer(TnPathOptimizer):
                     self.cached_paths = pickle.load(f)
             except FileNotFoundError:
                 # Make sure the path exists for future use.
-                self.filepath.mkdir(parents=True, exist_ok=True)
+                self.filepath.parent.mkdir(parents=True, exist_ok=True)
             except EOFError:
                 # No previous paths present; continue.
                 pass

@@ -368,6 +368,11 @@ class Trainer(ABC):
 
         """
 
+    def post_epoch_step(self, epoch: int):
+        """Perform any post-epoch updates, such as updating the scheduled
+        learning rate."""
+        pass
+
     def _get_weighted_mean(self,
                            metric_running: list[tuple[int, Any]]):
         """Calculate weighted mean of metric from the running results."""
@@ -760,6 +765,8 @@ class Trainer(ABC):
                     )
                     if early_stopping:
                         break   # inner epoch loop
+
+                self.post_epoch_step(epoch)
 
                 epoch_end = time.time()
                 epoch_duration = epoch_end - epoch_start

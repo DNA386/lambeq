@@ -42,7 +42,8 @@ class PytorchTrainer(Trainer):
                  loss_function: Callable[..., torch.Tensor],
                  epochs: int,
                  optimizer: type[torch.optim.Optimizer] = torch.optim.AdamW,
-                 scheduler: type[torch.optim.lr_scheduler] | None = None,
+                 scheduler: type[torch.optim.lr_scheduler.LRScheduler] | None
+                 = None,
                  learning_rate: float = 1e-3,
                  device: int = -1,
                  *,
@@ -127,10 +128,8 @@ class PytorchTrainer(Trainer):
         self.optimizer = optimizer(self.model.parameters(), **optimizer_args)
 
         scheduler_args = dict(scheduler_args or {})
-        if scheduler is not None:
-            self.scheduler = scheduler(self.optimizer, **scheduler_args)
-        else:
-            self.scheduler = None
+        self.scheduler = (scheduler(self.optimizer, **scheduler_args)
+                          if scheduler is not None else None)
 
         self.model.to(self.device)
 
@@ -169,7 +168,8 @@ class PytorchTrainer(Trainer):
         """
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         torch.set_rng_state(checkpoint['torch_random_state'])
-        if checkpoint['scheduler_state_dict'] is not None:
+        if (checkpoint['scheduler_state_dict'] is not None
+                and self.scheduler is not None):
             self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
 
     def validation_step(

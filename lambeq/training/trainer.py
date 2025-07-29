@@ -371,7 +371,7 @@ class Trainer(ABC):
     def post_epoch_step(self, epoch: int):
         """Perform any post-epoch updates, such as updating the scheduled
         learning rate."""
-        pass
+        return None
 
     def _get_weighted_mean(self,
                            metric_running: list[tuple[int, Any]]):

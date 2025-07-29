@@ -152,8 +152,8 @@ class PytorchTrainer(Trainer):
             {'torch_random_state': torch.get_rng_state(),
              'optimizer_state_dict': self.optimizer.state_dict(),
              'scheduler_state_dict': self.scheduler.state_dict()
-                                     if self.scheduler is not None
-                                     else None})
+                if self.scheduler is not None
+                else None})
 
     def _load_extra_checkpoint_info(self, checkpoint: Checkpoint) -> None:
         """Load additional checkpoint information.

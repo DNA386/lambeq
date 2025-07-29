@@ -151,7 +151,9 @@ class PytorchTrainer(Trainer):
         checkpoint.add_many(
             {'torch_random_state': torch.get_rng_state(),
              'optimizer_state_dict': self.optimizer.state_dict(),
-             'scheduler_state_dict': self.scheduler.state_dict() or None})
+             'scheduler_state_dict': self.scheduler.state_dict()
+                                     if self.scheduler is not None
+                                     else None})
 
     def _load_extra_checkpoint_info(self, checkpoint: Checkpoint) -> None:
         """Load additional checkpoint information.
@@ -221,4 +223,5 @@ class PytorchTrainer(Trainer):
 
     def post_epoch_step(self, epoch):
         # Step the scheduler if present
-        self.scheduler.step(epoch=epoch)
+        if self.scheduler is not None:
+            self.scheduler.step(epoch=epoch)

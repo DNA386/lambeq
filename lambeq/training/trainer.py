@@ -368,7 +368,7 @@ class Trainer(ABC):
 
         """
 
-    def post_epoch_step(self, epoch: int):
+    def post_epoch_step(self, epoch: int, loss: float):
         """Perform any post-epoch updates, such as updating the scheduled
         learning rate."""
         return None
@@ -766,15 +766,15 @@ class Trainer(ABC):
                     if early_stopping:
                         break   # inner epoch loop
 
-                self.post_epoch_step(epoch)
+                epoch_loss = self._get_weighted_mean(train_losses)
+                self.post_epoch_step(epoch, loss=epoch_loss)
 
                 epoch_end = time.time()
                 epoch_duration = epoch_end - epoch_start
                 self.train_epoch_durations.append(epoch_duration)
 
                 # calculate epoch loss
-                self.train_epoch_costs.append(
-                    self._get_weighted_mean(train_losses))
+                self.train_epoch_costs.append(epoch_loss)
                 self._to_tensorboard('train/epoch_loss',
                                      self.train_epoch_costs[-1],
                                      epoch)

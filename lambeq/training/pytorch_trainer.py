@@ -221,7 +221,12 @@ class PytorchTrainer(Trainer):
         self.optimizer.step()
         return y_hat, loss.item()
 
-    def post_epoch_step(self, epoch):
+    def post_epoch_step(self, epoch: int, loss: float):
         # Step the scheduler if present
         if self.scheduler is not None:
-            self.scheduler.step(epoch=epoch)
+            # Plateau scheduler wants to know about the loss
+            if isinstance(self.scheduler,
+                          torch.optim.lr_scheduler.ReduceLROnPlateau):
+                self.scheduler.step(loss, epoch=epoch)
+            else:
+                self.scheduler.step(epoch=epoch)

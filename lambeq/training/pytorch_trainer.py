@@ -174,7 +174,7 @@ class PytorchTrainer(Trainer):
         with torch.no_grad():
             y_hat = self.model(x)
             loss = self.loss_function(y_hat, y.to(self.device))
-        return y_hat.detach(), loss.detach().item()
+        return y_hat.detach(), loss.item()
 
     def training_step(
             self,

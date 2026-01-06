@@ -199,6 +199,6 @@ class PytorchTrainer(Trainer):
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-        loss_item = loss.detach().item()
+        loss_item = loss.item()
         self.train_costs.append(loss_item)
         return y_hat.detach(), loss_item
